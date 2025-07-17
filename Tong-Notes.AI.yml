@@ -1,0 +1,260 @@
+app:
+  description: ''
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  mode: advanced-chat
+  name: Tong-Notes.AI
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/tongyi:0.0.18@ca40ec06ff35ca611fa5fdf99a15eeb007a9fe3bd725c9ff6d0436469ab0edc9
+- current_identifier: null
+  type: package
+  value:
+    plugin_unique_identifier: kernelstudio/ksai-dify-plugin-document:0.0.1@b16f10895b23916d33aeb60b0b02de6becb970f40b2043cacacc361237e3a18c
+kind: app
+version: 0.2.0
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions: []
+      allowed_file_types:
+      - image
+      - document
+      allowed_file_upload_methods:
+      - remote_url
+      - local_file
+      enabled: true
+      fileUploadConfig:
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        image_file_size_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: Hi, I'm your learning assistant, please enter your notes!
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: tool
+      id: 1752457196752-source-1752487234341-target
+      selected: false
+      source: '1752457196752'
+      sourceHandle: source
+      target: '1752487234341'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: tool
+        targetType: llm
+      id: 1752487234341-source-1752487241772-target
+      source: '1752487234341'
+      sourceHandle: source
+      target: '1752487241772'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: llm
+        targetType: answer
+      id: 1752487241772-source-1752487343053-target
+      source: '1752487241772'
+      sourceHandle: source
+      target: '1752487343053'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        desc: ''
+        selected: false
+        title: Start
+        type: start
+        variables: []
+      height: 54
+      id: '1752457196752'
+      position:
+        x: 80
+        y: 282
+      positionAbsolute:
+        x: 80
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: ''
+        is_team_authorization: true
+        output_schema: null
+        paramSchemas:
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Files
+            ja_JP: Files
+            pt_BR: Files
+            zh_Hans: 文件
+          label:
+            en_US: Files
+            ja_JP: Files
+            pt_BR: Files
+            zh_Hans: 文件
+          llm_description: 文件
+          max: null
+          min: null
+          name: files
+          options: []
+          placeholder: null
+          precision: null
+          required: true
+          scope: null
+          template: null
+          type: files
+        params:
+          files: ''
+        provider_id: kernelstudio/ksai-dify-plugin-document/ksai-dify-plugin-document
+        provider_name: kernelstudio/ksai-dify-plugin-document/ksai-dify-plugin-document
+        provider_type: builtin
+        selected: false
+        title: KSAI Document Extractor
+        tool_configurations: {}
+        tool_description: KSAI Document Extractor
+        tool_label: KSAI Document Extractor
+        tool_name: ksai-dify-plugin-document-extractor
+        tool_parameters:
+          files:
+            type: variable
+            value:
+            - sys
+            - files
+        type: tool
+      height: 54
+      id: '1752487234341'
+      position:
+        x: 384
+        y: 282
+      positionAbsolute:
+        x: 384
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: true
+          variable_selector:
+          - '1752487234341'
+          - text
+        desc: ''
+        model:
+          completion_params:
+            temperature: 0
+          mode: chat
+          name: qwen-max-latest
+          provider: langgenius/tongyi/tongyi
+        prompt_template:
+        - id: 66cbbfe0-3655-4e51-86b9-be691cc89b02
+          role: system
+          text: "# 背景\n你是全球排名前30的电子电气工程教授及语法纠错助手。你的任务是严格审核学生上传的笔记内容，内容可能包含图片扫描、手写体或机打文字，可能存在颜色变化。\n\
+            \n# 任务\n请依据以下步骤对 {{#context#}} 内容逐页处理：\n\n1. 提取每一页的知识点和关键句：\n   - 每页单独列出编号；\n\
+            \   - 所有专业术语翻译为英文；\n   - 关键句仍保留中文；\n   - 并为每个关键词写一句话简要总结（中文）。\n\n2. 纠正所有知识点错误（仅针对知识性错误）：\n\
+            \   - 对每一页逐一检查；\n   - 有问题的句子请先以**问题句**形式原文抄录，再单独起一行写**修正句**，将正确的知识点句子写下来；\n\
+            \   - 忽略中文字符扫描错位、空格异常、标点符号错误等。\n\n3. 所有输出内容必须以**纯文本格式**返回：\n   - 禁止加粗、斜体、标题符号（如#、**、-\
+            \ 等）；\n   - 禁止使用 Markdown、HTML、XML 或 LaTeX；\n   - 字体大小、风格保持一致（请你只输出纯文字内容，不要尝试控制字体属性）。\n\
+            \n4. 输出顺序必须为：\n   - “页码 X”\n   - 编号的知识点和关键句\n   - 疑问句 + 修正句（如果有）\n   -\
+            \ 如果无错误，请输出：“笔记没有错误”。\n\n5. 确保整个文件的每一页知识点和纠错都完整进行，不得有缺页漏页的情况发生。\n\n6.\
+            \ 有纠错的页书，就不必再写**笔记没有错误**的字眼。\n\n7. 每一页之间，必须插入一条分页横线（用`------------------`表示），无论有无错误，所有页都必须插入分页横线，且放在“页码\
+            \ X:”上方。\n\n# 输出格式示例（严格照此格式）：\n\n------------------\n页码 1:\n1. 半导体 (semiconductor)\
+            \ 是由二极管组成。\n2. 半导体内部有载流子 (charge carriers) 和漂移电子 (drift electrons)。\n\n\
+            疑问句：电阻的单位是安培。\n修正句：电阻的单位是欧姆。\n\n------------------\n页码 2:\n1. 开关闭合电容充电。\n\
+            2. 开关断开电容放电。\n\n疑问句：在交流电路中，电压和电流总是同相位。\n修正句：在交流电路中，电压和电流的相位关系取决于电路的阻抗特性。\n\
+            \n------------------\n页码 3:\n笔记没有错误。\n\n# 特别强调\n- 输出务必只包含“纯文本内容”，不得使用任何格式化语法；\n\
+            - 字体大小保持一致，不可对“知识点”和“纠错”部分使用不同字号；\n- 不要美化输出，请保持简单、直接、结构化；\n- 每页都必须输出结果，不能省略页码；\n\
+            - 如果某一页无知识性错误，请照例输出：“笔记没有错误”。\n\n"
+        - id: 2b15e9f9-0ffa-4f01-81d2-536270f59502
+          role: user
+          text: ''
+        selected: true
+        title: LLM
+        type: llm
+        variables: []
+        vision:
+          configs:
+            detail: high
+            variable_selector:
+            - sys
+            - files
+          enabled: false
+      height: 90
+      id: '1752487241772'
+      position:
+        x: 688.8204102784466
+        y: 282
+      positionAbsolute:
+        x: 688.8204102784466
+        y: 282
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        answer: '{{#1752487241772.text#}}'
+        desc: ''
+        selected: false
+        title: Answer
+        type: answer
+        variables: []
+      height: 105
+      id: '1752487343053'
+      position:
+        x: 1039.1560789428345
+        y: 282
+      positionAbsolute:
+        x: 1039.1560789428345
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    viewport:
+      x: -151.48617804485366
+      y: 0.9638520040624314
+      zoom: 0.8745475276410689
