@@ -22,7 +22,11 @@ Model: Qwen LLM
 Config Format: `.yml` (YAML)
 
 # Example output
-Here is an exmaple of how the Notes Assistant works in action:
+Here are some screenshots showing how the Notes Assistant works:
+![Chat Example](./assets/chat-example.png) 
+
+![Result Example](./assets/result-example.png)
+
 
 
 
